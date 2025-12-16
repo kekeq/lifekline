@@ -1,7 +1,8 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { UserInput, Gender } from '../types';
 import { Loader2, Sparkles, TrendingUp, Settings } from 'lucide-react';
+import { calculateBazi } from './baziUtils';
 
 interface BaziFormProps {
   onSubmit: (data: UserInput) => void;
@@ -13,15 +14,19 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
     name: '',
     gender: Gender.MALE,
     birthYear: '',
+    birthMonth: '',
+    birthDay: '',
+    birthHour: '',
+    birthMinute: '',
     yearPillar: '',
     monthPillar: '',
     dayPillar: '',
     hourPillar: '',
     startAge: '',
     firstDaYun: '',
-    modelName: 'gemini-3-pro-preview',
-    apiBaseUrl: 'https://max.openai365.top/v1',
-    apiKey: '',
+    modelName: 'deepseek-chat',
+    apiBaseUrl: 'https://api.deepseek.com/v1',
+    apiKey: 'sk-f71421af40e646cfb2a226bc450728e2',
   });
 
   const [formErrors, setFormErrors] = useState<{ modelName?: string, apiBaseUrl?: string, apiKey?: string }>({});
@@ -34,6 +39,40 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
       setFormErrors(prev => ({ ...prev, [name]: undefined }));
     }
   };
+
+  // 自动计算八字
+  useEffect(() => {
+    // 检查是否输入了完整的出生日期和时间
+    const { birthYear, birthMonth, birthDay, birthHour, birthMinute, gender } = formData;
+    if (birthYear && birthMonth && birthDay && birthHour) {
+      const year = parseInt(birthYear);
+      const month = parseInt(birthMonth);
+      const day = parseInt(birthDay);
+      const hour = parseInt(birthHour);
+      const minute = birthMinute ? parseInt(birthMinute) : 0;
+      
+      // 验证日期合法性
+      if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59) {
+        try {
+          // 计算八字
+          const baziResult = calculateBazi(year, month, day, hour, minute, gender);
+          
+          // 更新formData
+          setFormData(prev => ({
+            ...prev,
+            yearPillar: baziResult.yearPillar,
+            monthPillar: baziResult.monthPillar,
+            dayPillar: baziResult.dayPillar,
+            hourPillar: baziResult.hourPillar,
+            startAge: baziResult.startAge.toString(),
+            firstDaYun: baziResult.firstDaYun
+          }));
+        } catch (error) {
+          console.error('八字计算错误:', error);
+        }
+      }
+    }
+  }, [formData.birthYear, formData.birthMonth, formData.birthDay, formData.birthHour, formData.birthMinute, formData.gender]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +136,7 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
               value={formData.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-              placeholder="姓名"
+              placeholder="姓名：张三"
             />
           </div>
           <div>
@@ -131,23 +170,84 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
         <div className="bg-amber-50 p-4 rounded-xl border border-amber-100">
           <div className="flex items-center gap-2 mb-3 text-amber-800 text-sm font-bold">
             <Sparkles className="w-4 h-4" />
-            <span>输入四柱干支 (必填)</span>
+            <span>出生日期与时间 (必填)</span>
           </div>
 
-          {/* Birth Year Input - Added as requested */}
+          {/* Birth Date Inputs */}
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生年份 (阳历)</label>
+              <input
+                type="number"
+                name="birthYear"
+                required
+                min="1900"
+                max="2100"
+                value={formData.birthYear}
+                onChange={handleChange}
+                placeholder="如: 1990"
+                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生月份</label>
+              <input
+                type="number"
+                name="birthMonth"
+                required
+                min="1"
+                max="12"
+                value={formData.birthMonth}
+                onChange={handleChange}
+                placeholder="如: 3"
+                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生日期</label>
+              <input
+                type="number"
+                name="birthDay"
+                required
+                min="1"
+                max="31"
+                value={formData.birthDay}
+                onChange={handleChange}
+                placeholder="如: 15"
+                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生小时</label>
+              <input
+                type="number"
+                name="birthHour"
+                required
+                min="0"
+                max="23"
+                value={formData.birthHour}
+                onChange={handleChange}
+                placeholder="如: 14"
+                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+              />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生分钟</label>
+              <input
+                type="number"
+                name="birthMinute"
+                required
+                min="0"
+                max="59"
+                value={formData.birthMinute}
+                onChange={handleChange}
+                placeholder="如: 30"
+                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+              />
+            </div>
+          </div>
           <div className="mb-4">
-            <label className="block text-xs font-bold text-gray-600 mb-1">出生年份 (阳历)</label>
-            <input
-              type="number"
-              name="birthYear"
-              required
-              min="1900"
-              max="2100"
-              value={formData.birthYear}
-              onChange={handleChange}
-              placeholder="如: 1990"
-              className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
-            />
+            <p className="text-xs text-amber-600/70 text-center mb-3">输入完整出生日期时间后，四柱干支将自动计算</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
