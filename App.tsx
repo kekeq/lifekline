@@ -299,14 +299,14 @@ const App: React.FC = () => {
               <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-100 mb-6 text-left w-full max-w-lg">
                 <h3 className="font-bold text-indigo-800 mb-2">📝 使用方法</h3>
                 <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                  <li>填写八字信息，生成专属提示词</li>
-                  <li>复制提示词到任意 AI（ChatGPT、Claude、Gemini 等）</li>
-                  <li>将 AI 返回的 JSON 数据粘贴回来</li>
+                  <li>填写生辰信息，生成专属运势</li>
+                  {/* <li>复制提示词到任意 AI（ChatGPT、Claude、Gemini 等）</li>
+                  <li>将 AI 返回的 JSON 数据粘贴回来</li> */}
                 </ol>
               </div>
 
               {/* 快速导入 JSON 文件 */}
-              <label className="flex items-center gap-3 px-6 py-3 bg-white border-2 border-dashed border-emerald-300 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group mb-4">
+              {/* <label className="flex items-center gap-3 px-6 py-3 bg-white border-2 border-dashed border-emerald-300 rounded-xl cursor-pointer hover:border-emerald-500 hover:bg-emerald-50 transition-all group mb-4">
                 <FileUp className="w-6 h-6 text-emerald-500 group-hover:text-emerald-600" />
                 <span className="text-base font-medium text-gray-600 group-hover:text-emerald-700">已有 JSON 文件？点击直接导入</span>
                 <input
@@ -315,7 +315,7 @@ const App: React.FC = () => {
                   onChange={handleImportJsonFile}
                   className="hidden"
                 />
-              </label>
+              </label> */}
             </div>
 
             {/* 导入模式组件 */}

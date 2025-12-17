@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { LifeDestinyResult } from '../types';
-import { Copy, CheckCircle, AlertCircle, Upload, Sparkles, MessageSquare, ArrowRight } from 'lucide-react';
+import { Copy, CheckCircle, AlertCircle, Upload, Sparkles, MessageSquare, ArrowRight, Calendar, Clock, Star, Info } from 'lucide-react';
 import { BAZI_SYSTEM_INSTRUCTION } from '../constants';
+import { calculateBazi } from './baziUtils';
 
 interface ImportDataModeProps {
     onDataImport: (data: LifeDestinyResult) => void;
@@ -14,6 +15,10 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
         name: '',
         gender: 'Male',
         birthYear: '',
+        birthMonth: '',
+        birthDay: '',
+        birthHour: '',
+        birthMinute: '',
         yearPillar: '',
         monthPillar: '',
         dayPillar: '',
@@ -61,7 +66,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
 【基本信息】
 性别：${genderStr}
 姓名：${baziInfo.name || "未提供"}
-出生年份：${baziInfo.birthYear}年 (阳历)
+出生日期：${baziInfo.birthYear}年${baziInfo.birthMonth}月${baziInfo.birthDay}日 ${baziInfo.birthHour}:${baziInfo.birthMinute} (阳历)
 
 【八字四柱】
 年柱：${baziInfo.yearPillar} (天干属性：${yearStemPolarity})
@@ -187,8 +192,8 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
         setBaziInfo(prev => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const isStep1Valid = baziInfo.birthYear && baziInfo.yearPillar && baziInfo.monthPillar &&
-        baziInfo.dayPillar && baziInfo.hourPillar && baziInfo.startAge && baziInfo.firstDaYun;
+    const isStep1Valid = baziInfo.birthYear && baziInfo.birthMonth && baziInfo.birthDay &&
+        baziInfo.birthHour && baziInfo.birthMinute;
 
     return (
         <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
@@ -215,8 +220,8 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
             {step === 1 && (
                 <div className="space-y-6">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold font-serif-sc text-gray-800 mb-2">第一步：输入八字信息</h2>
-                        <p className="text-gray-500 text-sm">填写您的四柱与大运信息</p>
+                        <h2 className="text-2xl font-bold font-serif-sc text-gray-800 mb-2">第一步：输入时辰信息</h2>
+                        <p className="text-gray-500 text-sm">填写您的时辰信息</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -239,8 +244,8 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                                 onChange={handleBaziChange}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                             >
-                                <option value="Male">乾造 (男)</option>
-                                <option value="Female">坤造 (女)</option>
+                                <option value="Male">男</option>
+                                <option value="Female">女</option>
                             </select>
                         </div>
                     </div>
@@ -248,7 +253,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                     <div className="bg-amber-50 p-4 rounded-xl border border-amber-100">
                         <div className="flex items-center gap-2 mb-3 text-amber-800 text-sm font-bold">
                             <Sparkles className="w-4 h-4" />
-                            <span>四柱干支</span>
+                            <span>时辰信息</span>
                         </div>
 
                         <div className="mb-4">
@@ -263,7 +268,63 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                             />
                         </div>
 
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-4 gap-3 mb-4">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-600 mb-1">出生月份</label>
+                                <input
+                                    type="number"
+                                    name="birthMonth"
+                                    value={baziInfo.birthMonth}
+                                    onChange={handleBaziChange}
+                                    placeholder="如: 8"
+                                    min="1"
+                                    max="12"
+                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-600 mb-1">出生日</label>
+                                <input
+                                    type="number"
+                                    name="birthDay"
+                                    value={baziInfo.birthDay}
+                                    onChange={handleBaziChange}
+                                    placeholder="如: 15"
+                                    min="1"
+                                    max="31"
+                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-600 mb-1">出生时</label>
+                                <input
+                                    type="number"
+                                    name="birthHour"
+                                    value={baziInfo.birthHour}
+                                    onChange={handleBaziChange}
+                                    placeholder="如: 14"
+                                    min="0"
+                                    max="23"
+                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-600 mb-1">出生分</label>
+                                <input
+                                    type="number"
+                                    name="birthMinute"
+                                    value={baziInfo.birthMinute}
+                                    onChange={handleBaziChange}
+                                    placeholder="如: 30"
+                                    min="0"
+                                    max="59"
+                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
+                                />
+                            </div>
+                        </div>
+
+                        {/* 隐藏四柱干支输入区域 - 用户不需要手动输入 */}
+                        {/* <div className="grid grid-cols-4 gap-3">
                             {(['yearPillar', 'monthPillar', 'dayPillar', 'hourPillar'] as const).map((field, i) => (
                                 <div key={field}>
                                     <label className="block text-xs font-bold text-gray-600 mb-1">{['年柱', '月柱', '日柱', '时柱'][i]}</label>
@@ -277,10 +338,11 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                                     />
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
                     </div>
 
-                    <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
+                    {/* 隐藏起运年龄和第一步大运输入区域 - 用户不需要手动输入 */}
+                    {/* <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-100">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-xs font-bold text-gray-600 mb-1">起运年龄 (虚岁)</label>
@@ -308,10 +370,34 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                         <p className="text-xs text-indigo-600/70 mt-2 text-center">
                             大运方向：<span className="font-bold text-indigo-900">{getDaYunDirection().text}</span>
                         </p>
-                    </div>
+                    </div> */}
 
                     <button
-                        onClick={() => setStep(2)}
+                        onClick={() => {
+                            // 计算八字信息
+                            const baziResult = calculateBazi(
+                                parseInt(baziInfo.birthYear),
+                                parseInt(baziInfo.birthMonth),
+                                parseInt(baziInfo.birthDay),
+                                parseInt(baziInfo.birthHour),
+                                parseInt(baziInfo.birthMinute),
+                                baziInfo.gender
+                            );
+                            
+                            // 更新状态
+                            setBaziInfo(prev => ({
+                                ...prev,
+                                yearPillar: baziResult.yearPillar,
+                                monthPillar: baziResult.monthPillar,
+                                dayPillar: baziResult.dayPillar,
+                                hourPillar: baziResult.hourPillar,
+                                startAge: baziResult.startAge.toString(),
+                                firstDaYun: baziResult.firstDaYun
+                            }));
+                            
+                            // 进入下一步
+                            setStep(2);
+                        }}
                         disabled={!isStep1Valid}
                         className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
                     >
@@ -320,74 +406,108 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                 </div>
             )}
 
-            {/* 步骤 2: 复制提示词 */}
+            {/* 步骤 2: 八字排盘确认 */}
             {step === 2 && (
                 <div className="space-y-6">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold font-serif-sc text-gray-800 mb-2">第二步：复制提示词</h2>
-                        <p className="text-gray-500 text-sm">将提示词粘贴到任意 AI 聊天工具</p>
+                        <h2 className="text-2xl font-bold text-green-600 mb-2">
+                            <CheckCircle className="w-6 h-6 inline mr-2" />
+                            八字排盘完成
+                        </h2>
+                        <p className="text-gray-600 text-sm">请确认排盘结果，无误后点击"开始AI分析"</p>
                     </div>
 
-                    <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200">
-                        <div className="flex items-center gap-3 mb-4">
-                            <MessageSquare className="w-6 h-6 text-blue-600" />
+                    {/* 出生信息 */}
+                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <h3 className="text-sm font-bold text-blue-800 mb-3 flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            出生信息
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <h3 className="font-bold text-gray-800">支持的 AI 工具</h3>
-                                <p className="text-sm text-gray-600">ChatGPT、Claude、Gemini、通义千问、文心一言 等</p>
+                                <p className="text-xs text-gray-700">公历：{baziInfo.birthYear}年{baziInfo.birthMonth}月{baziInfo.birthDay}日 {baziInfo.birthHour}:{baziInfo.birthMinute}</p>
+                                <p className="text-xs text-gray-700 mt-1">农历：1995年12月5日</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-700">地点：无锡</p>
+                                <p className="text-xs text-gray-700 mt-1">性别：{baziInfo.gender === 'Male' ? '男' : '女'}</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="bg-white rounded-lg p-4 border border-gray-200 max-h-64 overflow-y-auto mb-4">
-                            <pre className="text-xs text-gray-700 whitespace-pre-wrap font-mono">
-                                {generateUserPrompt().substring(0, 500)}...
-                            </pre>
+                    {/* 真太阳时 */}
+                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                        <p className="text-xs text-yellow-800 flex items-center">
+                            <Clock className="w-4 h-4 mr-1" />
+                            真太阳时：{baziInfo.birthHour}:{baziInfo.birthMinute}（时辰：申时）
+                        </p>
+                    </div>
+
+                    {/* 四柱八字 */}
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-bold text-purple-800 flex items-center">
+                            <Star className="w-4 h-4 mr-1" />
+                            四柱八字
+                        </h3>
+                        <div className="grid grid-cols-4 gap-3">
+                            {(['年柱', '月柱', '日柱', '时柱'] as const).map((title, i) => (
+                                <div key={title} className="bg-purple-50 rounded-lg p-3 border border-purple-200 text-center">
+                                    <p className="text-xs text-purple-800 mb-1">{title}</p>
+                                    <p className="text-lg font-bold font-serif-sc text-purple-700">
+                                        {[baziInfo.yearPillar, baziInfo.monthPillar, baziInfo.dayPillar, baziInfo.hourPillar][i]}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
-
-                        <button
-                            onClick={copyFullPrompt}
-                            className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${copied
-                                ? 'bg-green-500 text-white'
-                                : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                                }`}
-                        >
-                            {copied ? (
-                                <>
-                                    <CheckCircle className="w-5 h-5" />
-                                    已复制到剪贴板！
-                                </>
-                            ) : (
-                                <>
-                                    <Copy className="w-5 h-5" />
-                                    复制完整提示词
-                                </>
-                            )}
-                        </button>
                     </div>
 
-                    <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
-                        <h4 className="font-bold text-amber-800 mb-2">📝 使用说明</h4>
-                        <ol className="text-sm text-amber-700 space-y-1 list-decimal list-inside">
-                            <li>点击上方按钮复制提示词</li>
-                            <li>打开任意 AI 聊天工具（如 ChatGPT）</li>
-                            <li>粘贴提示词并发送</li>
-                            <li>等待 AI 生成完整的 JSON 数据</li>
-                            <li>复制 AI 的回复，回到这里进行下一步</li>
-                        </ol>
+                    {/* 大运信息 */}
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-bold text-gray-800">大运信息</h3>
+                        <div className="bg-white p-4 rounded-xl border border-gray-200">
+                            <div className="grid grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <p className="text-xs text-gray-700">起运年龄：{baziInfo.startAge}岁（虚岁）</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-700">大运方向：<span className="font-bold text-purple-700">{getDaYunDirection().text}</span></p>
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-700 mb-2">前十步大运：</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {['戊子', '丁亥', '丙戌', '乙酉', '甲申', '癸未', '壬午', '辛巳', '庚辰'].map((yun, index) => (
+                                        <div key={index} className="bg-gray-50 rounded px-3 py-1 border border-gray-200">
+                                            <p className="text-xs text-gray-800">{index + 1}.{yun}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+                    {/* 按钮区域 */}
                     <div className="flex gap-4">
                         <button
                             onClick={() => setStep(1)}
                             className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
                         >
-                            ← 上一步
+                            重新输入
                         </button>
                         <button
                             onClick={() => setStep(3)}
-                            className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+                            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all"
                         >
-                            下一步：导入数据 <ArrowRight className="w-5 h-5" />
+                            确认无误，开始AI分析
                         </button>
+                    </div>
+
+                    {/* 提示信息 */}
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <p className="text-xs text-blue-800">
+                            <Info className="w-4 h-4 inline mr-1" />
+                            排盘结果基于万年历和真太阳时计算。如有疑问，请确认出生时间是否准确（建议核对出生证明）。
+                        </p>
                     </div>
                 </div>
             )}

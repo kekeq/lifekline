@@ -160,7 +160,7 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
                     : 'text-gray-500 hover:text-gray-700'
                   }`}
               >
-                坤造 (女)
+                女
               </button>
             </div>
           </div>
