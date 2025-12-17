@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { LifeDestinyResult } from '../types';
 import { Copy, CheckCircle, AlertCircle, Upload, Sparkles, MessageSquare, ArrowRight, Calendar, Clock, Star, Info } from 'lucide-react';
 import { BAZI_SYSTEM_INSTRUCTION } from '../constants';
-import { calculateBazi } from './baziUtils';
+import { calculateBazi } from './baziUtils.ts';
 
 interface ImportDataModeProps {
     onDataImport: (data: LifeDestinyResult) => void;
@@ -482,7 +482,7 @@ ${generateUserPrompt()}`;
                                 hourPillar: baziResult.hourPillar,
                                 startAge: baziResult.startAge.toString(),
                                 firstDaYun: baziResult.firstDaYun,
-                                lunarDate: baziResult.lunarDate
+                                lunarDate: baziResult.lunarDate,
                             }));
                             
                             // 进入下一步
@@ -517,9 +517,9 @@ ${generateUserPrompt()}`;
                             <div>
                                 <p className="text-xs text-gray-700">公历：{baziInfo.birthYear}年{baziInfo.birthMonth}月{baziInfo.birthDay}日 {baziInfo.birthHour}:{baziInfo.birthMinute}</p>
                             </div>
-                            {/* <div>
+                            <div>
                                 <p className="text-xs text-gray-700">农历：{baziInfo.lunarDate}</p>
-                            </div> */}
+                            </div>
                             <div>
                                 <p className="text-xs text-gray-700">性别：{baziInfo.gender === 'Male' ? '男' : '女'}</p>
                             </div>

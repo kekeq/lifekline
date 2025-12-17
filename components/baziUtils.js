@@ -294,6 +294,102 @@ const calculateFirstDaYun = (monthPillar, startAge, gender, year, month, day) =>
     }
     return SIXTY_NAJIA[daYunIndex];
 };
+// 农历日期计算函数
+const calculateLunarDate = (year, month, day) => {
+    // 农历月份名称
+    const lunarMonthNames = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
+    
+    // 节气日期（简化版本，实际应该使用精确的节气计算）
+    const solarTerms = [
+        { name: '立春', month: 2, day: 4 },
+        { name: '惊蛰', month: 3, day: 6 },
+        { name: '清明', month: 4, day: 5 },
+        { name: '立夏', month: 5, day: 6 },
+        { name: '芒种', month: 6, day: 6 },
+        { name: '小暑', month: 7, day: 7 },
+        { name: '立秋', month: 8, day: 7 },
+        { name: '白露', month: 9, day: 8 },
+        { name: '寒露', month: 10, day: 8 },
+        { name: '立冬', month: 11, day: 7 },
+        { name: '大雪', month: 12, day: 7 },
+        { name: '小寒', month: 1, day: 6 }
+    ];
+    
+    // 确定农历年份（考虑立春）
+    let lunarYear = year;
+    const liChun = solarTerms[0]; // 立春
+    if (month < liChun.month || (month === liChun.month && day < liChun.day)) {
+        lunarYear = year - 1;
+    }
+    
+    // 确定农历月份
+    let lunarMonth = 1;
+    const currentDate = new Date(year, month - 1, day);
+    
+    for (let i = 0; i < solarTerms.length; i++) {
+        const term = solarTerms[i];
+        const nextTerm = solarTerms[(i + 1) % solarTerms.length];
+        
+        // 处理跨年情况
+        let termYear = year;
+        let nextTermYear = year;
+        
+        if (term.month > month || (term.month === month && term.day > day)) {
+            termYear = year - 1;
+        }
+        
+        if (nextTerm.month < term.month) {
+            nextTermYear = year + 1;
+        } else if (nextTerm.month === month && nextTerm.day < day) {
+            nextTermYear = year + 1;
+        }
+        
+        const termDate = new Date(termYear, term.month - 1, term.day);
+        const nextTermDate = new Date(nextTermYear, nextTerm.month - 1, nextTerm.day);
+        
+        if (currentDate >= termDate && currentDate < nextTermDate) {
+            lunarMonth = i + 1;
+            break;
+        }
+    }
+    
+    // 计算农历日
+    const monthStartTerm = solarTerms[lunarMonth - 1];
+    let termYear = lunarYear;
+    if (monthStartTerm.month > month) {
+        termYear = lunarYear - 1;
+    }
+    
+    const monthStartDate = new Date(termYear, monthStartTerm.month - 1, monthStartTerm.day);
+    const diffDays = Math.ceil((currentDate.getTime() - monthStartDate.getTime()) / (1000 * 60 * 60 * 24));
+    const lunarDay = Math.max(1, Math.min(30, diffDays + 1));
+    
+    // 闰月处理（简化版本）
+    const leapMonths = {
+        1995: 8, 1998: 5, 2001: 4, 2004: 2, 2006: 7, 2009: 5,
+        2012: 4, 2014: 9, 2017: 6, 2020: 4, 2023: 2, 2025: 6, 2028: 5
+    };
+    
+    const leapMonth = leapMonths[lunarYear];
+    let isLeap = false;
+    
+    if (leapMonth && lunarMonth === leapMonth) {
+        isLeap = true;
+    } else if (leapMonth && lunarMonth > leapMonth) {
+        lunarMonth -= 1;
+    }
+    
+    // 格式化农历日期
+    const monthName = lunarMonthNames[lunarMonth - 1] || lunarMonth;
+    const leapPrefix = isLeap ? '闰' : '';
+    const dayName = lunarDay <= 10 ? `初${lunarDay}` : 
+                    lunarDay < 20 ? `十${lunarDay - 10}` : 
+                    lunarDay === 20 ? '二十' : 
+                    `廿${lunarDay - 20}`;
+    
+    return `${lunarYear}年农历${leapPrefix}${monthName}月${dayName}`;
+};
+
 const calculateBazi = (year, month, day, hour, minute, gender) => {
     const yearPillar = calculateYearPillar(year, month, day);
     const monthPillar = calculateMonthPillar(year, month, day);
@@ -301,13 +397,16 @@ const calculateBazi = (year, month, day, hour, minute, gender) => {
     const hourPillar = calculateHourPillar(dayPillar, hour, minute);
     const startAge = calculateStartAge(year, month, day, gender);
     const firstDaYun = calculateFirstDaYun(monthPillar, startAge, gender, year, month, day);
+    const lunarDate = calculateLunarDate(year, month, day);
+    
     return {
         yearPillar,
         monthPillar,
         dayPillar,
         hourPillar,
         startAge,
-        firstDaYun
+        firstDaYun,
+        lunarDate
     };
 };
 export { calculateYearPillar, calculateMonthPillar, calculateDayPillar, calculateHourPillar, calculateStartAge, calculateFirstDaYun, calculateBazi };
