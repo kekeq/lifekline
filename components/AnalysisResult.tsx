@@ -134,7 +134,7 @@ const AnalysisResult: React.FC<AnalysisResultProps> = ({ analysis }) => {
 
         {/* Crypto Analysis */}
         <Card
-          title="币圈交易运势"
+          title="股市交易运势"
           icon={Bitcoin}
           content={analysis.crypto}
           score={analysis.cryptoScore}

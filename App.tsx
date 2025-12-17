@@ -96,7 +96,7 @@ const App: React.FC = () => {
             crypto: data.crypto || "暂无交易分析",
             cryptoScore: data.cryptoScore || 5,
             cryptoYear: data.cryptoYear || "待定",
-            cryptoStyle: data.cryptoStyle || "现货定投",
+            cryptoStyle: data.cryptoStyle || "黄金定投",
           },
         };
 

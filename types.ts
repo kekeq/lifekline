@@ -65,10 +65,10 @@ export interface AnalysisData {
   familyScore: number; // 0-10
 
   // Crypto / Web3 Specifics
-  crypto: string;       // 币圈交易分析
+  crypto: string;       // 股市交易分析
   cryptoScore: number;  // 投机运势评分
   cryptoYear: string;   // 暴富流年 (e.g., 2025 乙巳)
-  cryptoStyle: string;  // 适合流派 (现货/合约/链上Alpha)
+  cryptoStyle: string;  // 适合流派 (现货/合约/加仓A股)
 }
 
 export interface LifeDestinyResult {

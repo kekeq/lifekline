@@ -50,7 +50,7 @@ export const generateLifeAnalysis = async (input: UserInput): Promise<LifeDestin
         crypto: mockData.crypto || "暂无交易分析",
         cryptoScore: mockData.cryptoScore || 5,
         cryptoYear: mockData.cryptoYear || "待定",
-        cryptoStyle: mockData.cryptoStyle || "现货定投",
+        cryptoStyle: mockData.cryptoStyle || "黄金定投",
       },
     };
   }
@@ -128,7 +128,7 @@ export const generateLifeAnalysis = async (input: UserInput): Promise<LifeDestin
     1. 确认格局与喜忌。
     2. 生成 **1-100 岁 (虚岁)** 的人生流年K线数据。
     3. 在 \`reason\` 字段中提供流年详批。
-    4. 生成带评分的命理分析报告（包含性格分析、币圈交易分析、发展风水分析）。
+    4. 生成带评分的命理分析报告（包含性格分析、股市交易分析、发展风水分析）。
     
     请严格按照系统指令生成 JSON 数据。
   `;
@@ -211,7 +211,7 @@ export const generateLifeAnalysis = async (input: UserInput): Promise<LifeDestin
         crypto: data.crypto || "暂无交易分析",
         cryptoScore: data.cryptoScore || 5,
         cryptoYear: data.cryptoYear || "待定",
-        cryptoStyle: data.cryptoStyle || "现货定投",
+        cryptoStyle: data.cryptoStyle || "黄金定投",
       },
     };
   } catch (error) {

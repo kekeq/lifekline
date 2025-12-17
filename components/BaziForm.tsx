@@ -24,7 +24,7 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
     hourPillar: '',
     startAge: '',
     firstDaYun: '',
-    modelName: 'deepseek-chat',
+    modelName: 'deepseek-reasoner',
     apiBaseUrl: 'https://api.deepseek.com/v1',
     apiKey: 'sk-f71421af40e646cfb2a226bc450728e2',
   });

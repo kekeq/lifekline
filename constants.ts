@@ -36,20 +36,20 @@ export const BAZI_SYSTEM_INSTRUCTION = `
   "healthScore": 5,
   "family": "六亲分析（60字）",
   "familyScore": 7,
-  "crypto": "币圈分析（60字）",
+  "crypto": "股市分析（60字）",
   "cryptoScore": 8,
   "cryptoYear": "暴富流年",
-  "cryptoStyle": "链上Alpha/高倍合约/现货定投",
+  "cryptoStyle": "加仓A股/大胆加仓/黄金定投",
   "chartPoints": [
     {"age":1,"year":1990,"daYun":"童限","ganZhi":"庚午","open":50,"close":55,"high":60,"low":45,"score":55,"reason":"开局平稳，家庭呵护"},
     ... (共100条，reason控制在20-30字)
   ]
 }
 
-**币圈分析逻辑:**
-- 偏财旺、身强 -> "链上Alpha"
-- 七杀旺、胆大 -> "高倍合约"
-- 正财旺、稳健 -> "现货定投"
+**股市分析逻辑:**
+- 偏财旺、身强 -> "加仓A股"
+- 七杀旺、胆大 -> "大胆加仓"
+- 正财旺、稳健 -> "黄金定投"
 `;
 
 // 系统状态开关

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { LifeDestinyResult } from '../types';
 import { Copy, CheckCircle, AlertCircle, Upload, Sparkles, MessageSquare, ArrowRight, Calendar, Clock, Star, Info } from 'lucide-react';
 import { BAZI_SYSTEM_INSTRUCTION } from '../constants';
@@ -25,10 +25,15 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
         hourPillar: '',
         startAge: '',
         firstDaYun: '',
+        lunarDate: '',
     });
     const [jsonInput, setJsonInput] = useState('');
     const [copied, setCopied] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    // 使用Ref管理计时器，避免状态更新
+    const intervalRef = useRef<number | null>(null);
 
     // 计算大运方向
     const getDaYunDirection = () => {
@@ -99,14 +104,20 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
 1. 确认格局与喜忌。
 2. 生成 **1-100 岁 (虚岁)** 的人生流年K线数据。
 3. 在 \`reason\` 字段中提供流年详批。
-4. 生成带评分的命理分析报告（包含性格分析、币圈交易分析、发展风水分析）。
+4. 生成带评分的命理分析报告（包含性格分析、股市交易分析、发展风水分析）。
 
 请严格按照系统指令生成 JSON 数据。务必只返回纯JSON格式数据，不要包含任何markdown代码块标记或其他文字说明。`;
     };
 
     // 复制完整提示词
     const copyFullPrompt = async () => {
-        const fullPrompt = `=== 系统指令 (System Prompt) ===\n\n${BAZI_SYSTEM_INSTRUCTION}\n\n=== 用户提示词 (User Prompt) ===\n\n${generateUserPrompt()}`;
+        const fullPrompt = `=== 系统指令 (System Prompt) ===
+
+${BAZI_SYSTEM_INSTRUCTION}
+
+=== 用户提示词 (User Prompt) ===
+
+${generateUserPrompt()}`;
 
         try {
             await navigator.clipboard.writeText(fullPrompt);
@@ -114,6 +125,84 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
             console.error('复制失败', err);
+        }
+    };
+
+    // 一键请求 DeepSeek API
+    const handleOneClickRequest = async () => {
+        setIsLoading(true);
+        setProgress(0);
+        setError(null);
+
+        // 启动进度模拟（5分钟完成）
+        const totalDuration = 5 * 60; // 总时长（秒）
+        const startTime = Date.now();
+        const intervalTime = 1000; // 每秒更新一次
+
+        // 使用Ref管理计时器
+        intervalRef.current = window.setInterval(() => {
+            const elapsedSeconds = (Date.now() - startTime) / 1000;
+            const newProgress = Math.min((elapsedSeconds / totalDuration) * 100, 100);
+            setProgress(newProgress);
+        }, intervalTime);
+
+        try {
+            // 构建完整提示词
+            const fullPrompt = `=== 系统指令 (System Prompt) ===
+
+${BAZI_SYSTEM_INSTRUCTION}
+
+=== 用户提示词 (User Prompt) ===
+
+${generateUserPrompt()}`;
+
+            // 调用 DeepSeek API
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer sk-f71421af40e646cfb2a226bc450728e2`,
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-reasoner',
+                    messages: [
+                        {
+                            role: 'user',
+                            content: fullPrompt
+                        }
+                    ],
+                    max_tokens: 32768,
+                    temperature: 0.7
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`API请求失败：${response.status} ${errorData.error?.message || '未知错误'}`);
+            }
+
+            const data = await response.json();
+
+            // 提取AI回复内容
+            const aiResponse = data.choices?.[0]?.message?.content;
+            if (!aiResponse) {
+                throw new Error('API响应格式不正确：缺少回复内容');
+            }
+
+            // 设置JSON输入并跳转到下一步
+            setJsonInput(aiResponse);
+            setStep(4);
+            setProgress(100); // 确保进度条显示100%
+        } catch (err: any) {
+            console.error('一键请求失败:', err);
+            setError(err.message || '请求失败，请稍后重试');
+        } finally {
+            setIsLoading(false);
+            // 清除进度计时器
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
         }
     };
 
@@ -178,7 +267,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                     crypto: data.crypto || "暂无交易分析",
                     cryptoScore: data.cryptoScore || 5,
                     cryptoYear: data.cryptoYear || "待定",
-                    cryptoStyle: data.cryptoStyle || "现货定投",
+                    cryptoStyle: data.cryptoStyle || "黄金定投",
                 },
             };
 
@@ -392,7 +481,8 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                                 dayPillar: baziResult.dayPillar,
                                 hourPillar: baziResult.hourPillar,
                                 startAge: baziResult.startAge.toString(),
-                                firstDaYun: baziResult.firstDaYun
+                                firstDaYun: baziResult.firstDaYun,
+                                lunarDate: baziResult.lunarDate
                             }));
                             
                             // 进入下一步
@@ -401,7 +491,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                         disabled={!isStep1Valid}
                         className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
                     >
-                        下一步：生成提示词 <ArrowRight className="w-5 h-5" />
+                        下一步：八字排盘 <ArrowRight className="w-5 h-5" />
                     </button>
                 </div>
             )}
@@ -426,11 +516,12 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-xs text-gray-700">公历：{baziInfo.birthYear}年{baziInfo.birthMonth}月{baziInfo.birthDay}日 {baziInfo.birthHour}:{baziInfo.birthMinute}</p>
-                                <p className="text-xs text-gray-700 mt-1">农历：1995年12月5日</p>
                             </div>
+                            {/* <div>
+                                <p className="text-xs text-gray-700">农历：{baziInfo.lunarDate}</p>
+                            </div> */}
                             <div>
-                                <p className="text-xs text-gray-700">地点：无锡</p>
-                                <p className="text-xs text-gray-700 mt-1">性别：{baziInfo.gender === 'Male' ? '男' : '女'}</p>
+                                <p className="text-xs text-gray-700">性别：{baziInfo.gender === 'Male' ? '男' : '女'}</p>
                             </div>
                         </div>
                     </div>
@@ -556,6 +647,57 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                             </>
                         )}
                     </button>
+
+                    {/* 一键请求按钮 */}
+                    <div className="space-y-3">
+                        <button
+                            onClick={handleOneClickRequest}
+                            disabled={isLoading}
+                            className={`w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${isLoading
+                                ? 'bg-gray-400 text-white cursor-not-allowed'
+                                : 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white'}`}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                    请求中...
+                                </>
+                            ) : (
+                                <>
+                                    <Sparkles className="w-5 h-5" />
+                                    一键请求
+                                </>
+                            )}
+                        </button>
+
+                        {/* 进度条 */}
+                        {isLoading && (
+                            <div className="space-y-2">
+                                <div className="w-full bg-gray-200 rounded-full h-3">
+                                    <div
+                                        className="bg-gradient-to-r from-blue-600 to-cyan-600 h-3 rounded-full transition-all duration-500"
+                                        style={{ width: `${progress}%` }}
+                                    />
+                                </div>
+                                <div className="flex justify-between items-center text-xs text-gray-600">
+                                    <span>预计剩余时间: {Math.max(0, Math.floor((5 * 60 * (100 - progress)) / 100 / 60))}分{Math.max(0, Math.floor((5 * 60 * (100 - progress)) / 100 % 60))}秒</span>
+                                    <span>{progress.toFixed(1)}%</span>
+                                </div>
+                                <p className="text-xs text-blue-600 text-center">正在生成详细命理分析，请耐心等待...</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* 错误提示 */}
+                    {error && (
+                        <div className="bg-red-50 p-4 rounded-xl border border-red-200">
+                            <div className="flex items-center gap-2 text-red-800 mb-2">
+                                <AlertCircle className="w-4 h-4" />
+                                <span className="font-bold text-sm">请求失败</span>
+                            </div>
+                            <p className="text-xs text-red-700">{error}</p>
+                        </div>
+                    )}
 
                     <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
                         <h3 className="text-sm font-bold text-yellow-800 mb-2">使用说明</h3>
