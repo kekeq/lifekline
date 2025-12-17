@@ -10,7 +10,7 @@ interface ImportDataModeProps {
 }
 
 const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
-    const [step, setStep] = useState<1 | 2 | 3>(1);
+    const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
     const [baziInfo, setBaziInfo] = useState({
         name: '',
         gender: 'Male',
@@ -199,7 +199,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
         <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
             {/* 步骤指示器 */}
             <div className="flex items-center justify-center gap-2 mb-8">
-                {[1, 2, 3].map((s) => (
+                {[1, 2, 3, 4].map((s) => (
                     <React.Fragment key={s}>
                         <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step === s
@@ -211,7 +211,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                         >
                             {step > s ? <CheckCircle className="w-5 h-5" /> : s}
                         </div>
-                        {s < 3 && <div className={`w-16 h-1 rounded ${step > s ? 'bg-green-500' : 'bg-gray-200'}`} />}
+                        {s < 4 && <div className={`w-16 h-1 rounded ${step > s ? 'bg-green-500' : 'bg-gray-200'}`} />}
                     </React.Fragment>
                 ))}
             </div>
@@ -498,7 +498,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                             onClick={() => setStep(3)}
                             className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all"
                         >
-                            确认无误，开始AI分析
+                            确认无误，生成提示词
                         </button>
                     </div>
 
@@ -512,11 +512,85 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
                 </div>
             )}
 
-            {/* 步骤 3: 导入 JSON */}
+            {/* 步骤 3: 生成提示词 */}
             {step === 3 && (
                 <div className="space-y-6">
                     <div className="text-center">
-                        <h2 className="text-2xl font-bold font-serif-sc text-gray-800 mb-2">第三步：导入 AI 回复</h2>
+                        <h2 className="text-2xl font-bold font-serif-sc text-gray-800 mb-2">第三步：复制提示词</h2>
+                        <p className="text-gray-500 text-sm">将提示词粘贴到任意 AI 聊天工具</p>
+                    </div>
+
+                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                        <label className="block text-sm font-bold text-blue-800 mb-2">
+                            <MessageSquare className="w-4 h-4 inline mr-2" />
+                            支持的 AI 工具
+                        </label>
+                        <p className="text-xs text-blue-700">ChatGPT、Claude、Gemini、通义千问、文心一言等</p>
+                    </div>
+
+                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <label className="block text-sm font-bold text-gray-700 mb-2">
+                            <Sparkles className="w-4 h-4 inline mr-2" />
+                            完整提示词
+                        </label>
+                        <div className="bg-white p-4 rounded-lg border border-gray-300 h-64 overflow-y-auto font-mono text-xs">
+                            {generateUserPrompt()}
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={copyFullPrompt}
+                        className={`w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${copied
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'}`}
+                    >
+                        {copied ? (
+                            <>
+                                <CheckCircle className="w-5 h-5" />
+                                已复制！
+                            </>
+                        ) : (
+                            <>
+                                <Copy className="w-5 h-5" />
+                                复制完整提示词
+                            </>
+                        )}
+                    </button>
+
+                    <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
+                        <h3 className="text-sm font-bold text-yellow-800 mb-2">使用说明</h3>
+                        <ol className="text-xs text-yellow-700 space-y-1 list-decimal list-inside">
+                            <li>点击上方按钮复制提示词</li>
+                            <li>打开任意 AI 聊天工具（如 ChatGPT）</li>
+                            <li>粘贴提示词并发送</li>
+                            <li>等待 AI 生成完整的 JSON 数据</li>
+                            <li>复制 AI 的回复，回到这里进行下一步</li>
+                        </ol>
+                    </div>
+
+                    <div className="flex gap-4">
+                        <button
+                            onClick={() => setStep(2)}
+                            className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
+                        >
+                            ← 上一步
+                        </button>
+                        <button
+                            onClick={() => setStep(4)}
+                            className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+                        >
+                            下一步：导入数据
+                            <ArrowRight className="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* 步骤 4: 导入 JSON */}
+            {step === 4 && (
+                <div className="space-y-6">
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold font-serif-sc text-gray-800 mb-2">第四步：导入 AI 回复</h2>
                         <p className="text-gray-500 text-sm">粘贴 AI 返回的 JSON 数据</p>
                     </div>
 
@@ -542,7 +616,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
 
                     <div className="flex gap-4">
                         <button
-                            onClick={() => setStep(2)}
+                            onClick={() => setStep(3)}
                             className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
                         >
                             ← 上一步
