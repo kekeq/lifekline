@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { LifeDestinyResult } from '../types';
 import { Copy, CheckCircle, AlertCircle, Upload, Sparkles, MessageSquare, ArrowRight, Calendar, Clock, Star, Info } from 'lucide-react';
 import { BAZI_SYSTEM_INSTRUCTION } from '../constants';
@@ -35,6 +35,19 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
     const [progress, setProgress] = useState(0);
     // 使用Ref管理计时器，避免状态更新
     const intervalRef = useRef<number | null>(null);
+    // 使用Ref标记是否是自动请求后需要自动导入的数据
+    const autoImportRef = useRef(false);
+
+    // 监听状态变化，自动导入数据
+    useEffect(() => {
+        // 当step为4且jsonInput有内容且autoImportRef为true时，自动调用导入函数
+        if (step === 4 && jsonInput.trim() && autoImportRef.current) {
+            console.log('useEffect检测到需要自动导入');
+            handleImport();
+            // 重置自动导入标记
+            autoImportRef.current = false;
+        }
+    }, [step, jsonInput]);
 
     // 计算大运方向
     const getDaYunDirection = () => {
@@ -195,10 +208,8 @@ ${generateUserPrompt()}`;
             setStep(4);
             setProgress(100); // 确保进度条显示100%
             
-            // 自动调用导入函数，直接跳转到结果页
-            setTimeout(() => {
-                handleImport();
-            }, 500); // 延迟执行，确保状态更新完成
+            // 标记需要自动导入
+            autoImportRef.current = true;
         } catch (err: any) {
             console.error('一键请求失败:', err);
             setError(err.message || '请求失败，请稍后重试');
@@ -214,6 +225,7 @@ ${generateUserPrompt()}`;
 
     // 解析导入的 JSON
     const handleImport = () => {
+        console.log('handleImport函数被调用');
         setError(null);
 
         if (!jsonInput.trim()) {
