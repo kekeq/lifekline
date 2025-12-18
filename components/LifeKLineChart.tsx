@@ -172,8 +172,8 @@ const LifeKLineChart: React.FC<LifeKLineChartProps> = ({ data }) => {
       <div className="mb-6 flex justify-between items-center px-2">
         <h3 className="text-xl font-bold text-gray-800 font-serif-sc">人生流年大运K线图</h3>
         <div className="flex gap-4 text-xs font-medium">
-           <span className="flex items-center text-green-700 bg-green-50 px-2 py-1 rounded"><div className="w-2 h-2 bg-green-500 mr-2 rounded-full"></div> 吉运 (涨)</span>
-           <span className="flex items-center text-red-700 bg-red-50 px-2 py-1 rounded"><div className="w-2 h-2 bg-red-500 mr-2 rounded-full"></div> 凶运 (跌)</span>
+           <span className="flex items-center text-red-700 bg-red-50 px-2 py-1 rounded"><div className="w-2 h-2 bg-red-500 mr-2 rounded-full"></div> 吉运 (涨)</span>
+           <span className="flex items-center text-green-700 bg-green-50 px-2 py-1 rounded"><div className="w-2 h-2 bg-green-500 mr-2 rounded-full"></div> 凶运 (跌) </span>
         </div>
       </div>
       
