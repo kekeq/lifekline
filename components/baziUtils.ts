@@ -348,6 +348,7 @@ interface LunarDate {
   month: number;   // 农历月份（1-12，闰月为负数，如闰5月为-5）
   day: number;     // 农历日期（1-30）
   isLeap: boolean; // 是否是闰月
+  dateStr: string; // 农历日期字符串（如"2023年闰4月1日"）
 }
 // 注意：这是一个简化版本，实际农历计算需要更复杂的天文算法
 // const calculateLunarDate = (year: number, month: number, day: number): LunarDate => {
@@ -501,15 +502,15 @@ const calculateLunarDate = (year: number, month: number, day: number): LunarDate
     year: lunar.lunarYear,
     month: lunar.lunarMonth,
     day: lunar.lunarDate,
-    isLeap: lunar.isLeap
+    isLeap: lunar.isLeap,
+    dateStr: lunar.dateStr
   };
 };
 
 // 格式化农历日期为字符串
 const formatLunarDate = (lunarDate: LunarDate): string => {
-  const { year, month, day, isLeap } = lunarDate;
-  const leapStr = isLeap ? '闰' : '';
-  return `${year}年${leapStr}${Math.abs(month)}月${day}日`;
+  const { dateStr } = lunarDate;
+  return dateStr;
 };
 
 // 完整的八字计算
