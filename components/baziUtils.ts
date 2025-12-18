@@ -495,150 +495,162 @@ interface LunarDate {
 //   };
 // };
 
+// const calculateLunarDate = (year: number, month: number, day: number): LunarDate => {
+//   // 获取年柱（考虑立春）
+//   let lunarYear = year;
+  
+//   // 如果日期在立春之前，农历年为前一年
+//   const liChun = SOLAR_TERMS[1]; // 立春
+//   if (month < liChun.month || (month === liChun.month && day < liChun.day)) {
+//     lunarYear = year - 1;
+//   }
+  
+//   // 确定农历月份（基于节气）
+//   // 月份节气列表（节）：
+//   // 立春(2/4)-惊蛰(3/6)：正月
+//   // 惊蛰(3/6)-清明(4/5)：二月
+//   // 清明(4/5)-立夏(5/6)：三月
+//   // 立夏(5/6)-芒种(6/6)：四月
+//   // 芒种(6/6)-小暑(7/7)：五月
+//   // 小暑(7/7)-立秋(8/7)：六月
+//   // 立秋(8/7)-白露(9/8)：七月
+//   // 白露(9/8)-寒露(10/8)：八月
+//   // 寒露(10/8)-立冬(11/7)：九月
+//   // 立冬(11/7)-大雪(12/7)：十月
+//   // 大雪(12/7)-小寒(1/6)：十一月
+//   // 小寒(1/6)-立春(2/4)：十二月
+//   const monthSolarTerms = [
+//     { name: '立春', month: 2, day: 4 },   // 正月节
+//     { name: '惊蛰', month: 3, day: 6 },   // 二月节
+//     { name: '清明', month: 4, day: 5 },   // 三月节
+//     { name: '立夏', month: 5, day: 6 },   // 四月节
+//     { name: '芒种', month: 6, day: 6 },   // 五月节
+//     { name: '小暑', month: 7, day: 7 },   // 六月节
+//     { name: '立秋', month: 8, day: 7 },   // 七月节
+//     { name: '白露', month: 9, day: 8 },   // 八月节
+//     { name: '寒露', month: 10, day: 8 },  // 九月节
+//     { name: '立冬', month: 11, day: 7 },  // 十月节
+//     { name: '大雪', month: 12, day: 7 },  // 十一月节
+//     { name: '小寒', month: 1, day: 6 }    // 十二月节
+//   ];
+  
+//   // 确定农历月份
+//   let lunarMonth = 1;
+  
+//   // 找到当前日期所在的农历月份区间
+//   for (let i = 0; i < monthSolarTerms.length; i++) {
+//     const term = monthSolarTerms[i];
+//     let nextTerm = monthSolarTerms[(i + 1) % monthSolarTerms.length];
+    
+//     // 处理跨年份的情况
+//     let termYear = year;
+//     let nextTermYear = year;
+    
+//     // 处理当前节气在当前月份之前的情况
+//     if (term.month > month || (term.month === month && term.day > day)) {
+//       termYear = year - 1;
+//     }
+    
+//     // 处理下一个节气在当前节气之后的情况（可能跨年度）
+//     if (nextTerm.month < term.month) {
+//       nextTermYear = year + 1;
+//     } else if (nextTerm.month === term.month && nextTerm.day < term.day) {
+//       nextTermYear = year + 1;
+//     } else if (nextTerm.month === month && nextTerm.day < day) {
+//       nextTermYear = year + 1;
+//     }
+    
+//     const termDate = new Date(termYear, term.month - 1, term.day);
+//     const nextTermDate = new Date(nextTermYear, nextTerm.month - 1, nextTerm.day);
+//     const currentDate = new Date(year, month - 1, day);
+    
+//     // 检查当前日期是否在当前节气和下一个节气之间
+//     if (currentDate >= termDate && currentDate < nextTermDate) {
+//       lunarMonth = i + 1;
+//       break;
+//     }
+//   }
+  
+//   // 计算农历日：基于农历月份的起始日期
+//   // 找到当前农历月份的起始节气日期
+//   const currentSolarTerm = monthSolarTerms[lunarMonth - 1];
+//   let termYear = lunarYear;
+  
+//   // 处理当前节气可能在上一年的情况
+//   if (currentSolarTerm.month > month) {
+//     termYear = lunarYear - 1;
+//   }
+  
+//   const monthStartDate = new Date(termYear, currentSolarTerm.month - 1, currentSolarTerm.day);
+//   const currentDate = new Date(year, month - 1, day);
+  
+//   // 计算从农历月份开始到当前日期的天数差
+//   let diffDays = Math.ceil((currentDate.getTime() - monthStartDate.getTime()) / (1000 * 60 * 60 * 24));
+  
+//   // 确保diffDays为正数
+//   diffDays = Math.max(diffDays, 0);
+  
+//   // 计算农历日：月份开始日为初一（1号），所以直接加1
+//   let lunarDay = diffDays + 1;
+  
+//   // 确保农历日期在1-30之间
+//   if (lunarDay < 1) {
+//     lunarDay = 1;
+//   } else if (lunarDay > 30) {
+//     lunarDay = 30;
+//   }
+  
+//   // 处理可能的闰月情况（简化处理）
+//   // 注意：实际闰月需要更精确的计算
+//   const leapMonths: Record<number, number> = {
+//     1995: 8,
+//     1998: 5,
+//     2001: 4,
+//     2004: 2,
+//     2006: 7,
+//     2009: 5,
+//     2012: 4,
+//     2014: 9,
+//     2017: 6,
+//     2020: 4,
+//     2023: 2,
+//     2025: 6,
+//     2028: 5
+//   };
+  
+//   // 检查当前农历年是否有闰月
+//   const leapMonth = leapMonths[lunarYear];
+//   let isLeap = false;
+  
+//   // 如果有闰月且当前月份等于闰月，则标记为闰月
+//   if (leapMonth && lunarMonth === leapMonth) {
+//     isLeap = true;
+//   } else if (leapMonth && lunarMonth > leapMonth) {
+//     // 如果有闰月且当前月份大于闰月，则月份减1
+//     lunarMonth -= 1;
+//   }
+  
+//   // 生成日期字符串
+//   const dateStr = `${lunarYear}年${isLeap ? '闰' : ''}${lunarMonth}月${lunarDay}日`;
+  
+//   return {
+//     year: lunarYear,
+//     month: lunarMonth,
+//     day: lunarDay,
+//     isLeap: isLeap,
+//     dateStr: dateStr
+//   };
+// };
+
 const calculateLunarDate = (year: number, month: number, day: number): LunarDate => {
-  // 获取年柱（考虑立春）
-  let lunarYear = year;
-  
-  // 如果日期在立春之前，农历年为前一年
-  const liChun = SOLAR_TERMS[1]; // 立春
-  if (month < liChun.month || (month === liChun.month && day < liChun.day)) {
-    lunarYear = year - 1;
-  }
-  
-  // 确定农历月份（基于节气）
-  // 月份节气列表（节）：
-  // 立春(2/4)-惊蛰(3/6)：正月
-  // 惊蛰(3/6)-清明(4/5)：二月
-  // 清明(4/5)-立夏(5/6)：三月
-  // 立夏(5/6)-芒种(6/6)：四月
-  // 芒种(6/6)-小暑(7/7)：五月
-  // 小暑(7/7)-立秋(8/7)：六月
-  // 立秋(8/7)-白露(9/8)：七月
-  // 白露(9/8)-寒露(10/8)：八月
-  // 寒露(10/8)-立冬(11/7)：九月
-  // 立冬(11/7)-大雪(12/7)：十月
-  // 大雪(12/7)-小寒(1/6)：十一月
-  // 小寒(1/6)-立春(2/4)：十二月
-  const monthSolarTerms = [
-    { name: '立春', month: 2, day: 4 },   // 正月节
-    { name: '惊蛰', month: 3, day: 6 },   // 二月节
-    { name: '清明', month: 4, day: 5 },   // 三月节
-    { name: '立夏', month: 5, day: 6 },   // 四月节
-    { name: '芒种', month: 6, day: 6 },   // 五月节
-    { name: '小暑', month: 7, day: 7 },   // 六月节
-    { name: '立秋', month: 8, day: 7 },   // 七月节
-    { name: '白露', month: 9, day: 8 },   // 八月节
-    { name: '寒露', month: 10, day: 8 },  // 九月节
-    { name: '立冬', month: 11, day: 7 },  // 十月节
-    { name: '大雪', month: 12, day: 7 },  // 十一月节
-    { name: '小寒', month: 1, day: 6 }    // 十二月节
-  ];
-  
-  // 确定农历月份
-  let lunarMonth = 1;
-  
-  // 找到当前日期所在的农历月份区间
-  for (let i = 0; i < monthSolarTerms.length; i++) {
-    const term = monthSolarTerms[i];
-    let nextTerm = monthSolarTerms[(i + 1) % monthSolarTerms.length];
-    
-    // 处理跨年份的情况
-    let termYear = year;
-    let nextTermYear = year;
-    
-    // 处理当前节气在当前月份之前的情况
-    if (term.month > month || (term.month === month && term.day > day)) {
-      termYear = year - 1;
-    }
-    
-    // 处理下一个节气在当前节气之后的情况（可能跨年度）
-    if (nextTerm.month < term.month) {
-      nextTermYear = year + 1;
-    } else if (nextTerm.month === term.month && nextTerm.day < term.day) {
-      nextTermYear = year + 1;
-    } else if (nextTerm.month === month && nextTerm.day < day) {
-      nextTermYear = year + 1;
-    }
-    
-    const termDate = new Date(termYear, term.month - 1, term.day);
-    const nextTermDate = new Date(nextTermYear, nextTerm.month - 1, nextTerm.day);
-    const currentDate = new Date(year, month - 1, day);
-    
-    // 检查当前日期是否在当前节气和下一个节气之间
-    if (currentDate >= termDate && currentDate < nextTermDate) {
-      lunarMonth = i + 1;
-      break;
-    }
-  }
-  
-  // 计算农历日：基于农历月份的起始日期
-  // 找到当前农历月份的起始节气日期
-  const currentSolarTerm = monthSolarTerms[lunarMonth - 1];
-  let termYear = lunarYear;
-  
-  // 处理当前节气可能在上一年的情况
-  if (currentSolarTerm.month > month) {
-    termYear = lunarYear - 1;
-  }
-  
-  const monthStartDate = new Date(termYear, currentSolarTerm.month - 1, currentSolarTerm.day);
-  const currentDate = new Date(year, month - 1, day);
-  
-  // 计算从农历月份开始到当前日期的天数差
-  let diffDays = Math.ceil((currentDate.getTime() - monthStartDate.getTime()) / (1000 * 60 * 60 * 24));
-  
-  // 确保diffDays为正数
-  diffDays = Math.max(diffDays, 0);
-  
-  // 计算农历日：月份开始日为初一（1号），所以直接加1
-  let lunarDay = diffDays + 1;
-  
-  // 确保农历日期在1-30之间
-  if (lunarDay < 1) {
-    lunarDay = 1;
-  } else if (lunarDay > 30) {
-    lunarDay = 30;
-  }
-  
-  // 处理可能的闰月情况（简化处理）
-  // 注意：实际闰月需要更精确的计算
-  const leapMonths: Record<number, number> = {
-    1995: 8,
-    1998: 5,
-    2001: 4,
-    2004: 2,
-    2006: 7,
-    2009: 5,
-    2012: 4,
-    2014: 9,
-    2017: 6,
-    2020: 4,
-    2023: 2,
-    2025: 6,
-    2028: 5
-  };
-  
-  // 检查当前农历年是否有闰月
-  const leapMonth = leapMonths[lunarYear];
-  let isLeap = false;
-  
-  // 如果有闰月且当前月份等于闰月，则标记为闰月
-  if (leapMonth && lunarMonth === leapMonth) {
-    isLeap = true;
-  } else if (leapMonth && lunarMonth > leapMonth) {
-    // 如果有闰月且当前月份大于闰月，则月份减1
-    lunarMonth -= 1;
-  }
-  
-  // 生成日期字符串
-  const dateStr = `${lunarYear}年${isLeap ? '闰' : ''}${lunarMonth}月${lunarDay}日`;
-  
+  const lunar = getLunar(year, month, day);
+  // const lunar = solarToLunar(year, month, day);
   return {
-    year: lunarYear,
-    month: lunarMonth,
-    day: lunarDay,
-    isLeap: isLeap,
-    dateStr: dateStr
+    year: lunar.lunarYear,
+    month: lunar.lunarMonth,
+    day: lunar.lunarDate,
+    isLeap: lunar.isLeap,
+    dateStr: `${lunar.lunarYear}${lunar.dateStr}`,
   };
 };
 

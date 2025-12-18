@@ -74,8 +74,8 @@ const CandleShape = (props: any) => {
   const { x, y, width, height, payload, yAxis } = props;
 
   const isUp = payload.close >= payload.open;
-  const color = isUp ? '#22c55e' : '#ef4444'; // Green Up, Red Down
-  const strokeColor = isUp ? '#15803d' : '#b91c1c'; // Darker stroke for better visibility
+  const color = isUp ?  '#ef4444': '#22c55e'; // Green Up, Red Down
+  const strokeColor = isUp ? '#b91c1c' : '#15803d'; // Darker stroke for better visibility
   
   let highY = y;
   let lowY = y + height;
