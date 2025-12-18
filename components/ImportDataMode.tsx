@@ -194,6 +194,11 @@ ${generateUserPrompt()}`;
             setJsonInput(aiResponse);
             setStep(4);
             setProgress(100); // 确保进度条显示100%
+            
+            // 自动调用导入函数，直接跳转到结果页
+            setTimeout(() => {
+                handleImport();
+            }, 500); // 延迟执行，确保状态更新完成
         } catch (err: any) {
             console.error('一键请求失败:', err);
             setError(err.message || '请求失败，请稍后重试');
