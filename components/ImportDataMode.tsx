@@ -26,6 +26,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
         startAge: '',
         firstDaYun: '',
         lunarDate: '',
+        region: '',
     });
     const [jsonInput, setJsonInput] = useState('');
     const [copied, setCopied] = useState(false);
@@ -314,7 +315,7 @@ ${generateUserPrompt()}`;
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
+                            <div>
                             <label className="block text-xs font-bold text-gray-600 mb-1">姓名 (可选)</label>
                             <input
                                 type="text"
@@ -345,7 +346,7 @@ ${generateUserPrompt()}`;
                             <span>时辰信息</span>
                         </div>
 
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label className="block text-xs font-bold text-gray-600 mb-1">出生年份 (阳历)</label>
                             <input
                                 type="number"
@@ -353,65 +354,57 @@ ${generateUserPrompt()}`;
                                 value={baziInfo.birthYear}
                                 onChange={handleBaziChange}
                                 placeholder="如: 2003"
+                                min="1901"
+                                max="2025"
+                                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">年份范围：1901-2025</p>
+                        </div> */}
+
+                        {/* 出生日期时间控件 */}
+                        <div className="mb-4">
+                            <label className="block text-xs font-bold text-gray-600 mb-1">出生日期与时间</label>
+                            <input
+                                type="datetime-local"
+                                name="birthDateTime"
+                                value={(() => {
+                                    // 格式化现有状态为datetime-local格式
+                                    if (baziInfo.birthYear && baziInfo.birthMonth && baziInfo.birthDay && baziInfo.birthHour && baziInfo.birthMinute) {
+                                        return `${baziInfo.birthYear}-${baziInfo.birthMonth.padStart(2, '0')}-${baziInfo.birthDay.padStart(2, '0')}T${baziInfo.birthHour.padStart(2, '0')}:${baziInfo.birthMinute.padStart(2, '0')}`;
+                                    }
+                                    return '';
+                                })()}
+                                onChange={(e) => {
+                                    // 解析datetime-local值并更新各个字段
+                                    const dateTime = e.target.value;
+                                    if (dateTime) {
+                                        const [date, time] = dateTime.split('T');
+                                        const [year, month, day] = date.split('-');
+                                        const [hour, minute] = time.split(':');
+                                        setBaziInfo(prev => ({
+                                            ...prev,
+                                            birthYear: year,
+                                            birthMonth: month,
+                                            birthDay: day,
+                                            birthHour: hour,
+                                            birthMinute: minute
+                                        }));
+                                    }
+                                }}
                                 className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
                             />
                         </div>
-
-                        <div className="grid grid-cols-4 gap-3 mb-4">
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1">出生月份</label>
-                                <input
-                                    type="number"
-                                    name="birthMonth"
-                                    value={baziInfo.birthMonth}
-                                    onChange={handleBaziChange}
-                                    placeholder="如: 8"
-                                    min="1"
-                                    max="12"
-                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1">出生日</label>
-                                <input
-                                    type="number"
-                                    name="birthDay"
-                                    value={baziInfo.birthDay}
-                                    onChange={handleBaziChange}
-                                    placeholder="如: 15"
-                                    min="1"
-                                    max="31"
-                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1">出生时</label>
-                                <input
-                                    type="number"
-                                    name="birthHour"
-                                    value={baziInfo.birthHour}
-                                    onChange={handleBaziChange}
-                                    placeholder="如: 14"
-                                    min="0"
-                                    max="23"
-                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-bold text-gray-600 mb-1">出生分</label>
-                                <input
-                                    type="number"
-                                    name="birthMinute"
-                                    value={baziInfo.birthMinute}
-                                    onChange={handleBaziChange}
-                                    placeholder="如: 30"
-                                    min="0"
-                                    max="59"
-                                    className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white text-center font-bold"
-                                />
-                            </div>
-                        </div>
-
+                    <div>
+                        <label className="block text-xs font-bold text-gray-600 mb-1">出生地区 (可选)</label>
+                        <input
+                            type="text"
+                            name="region"
+                            value={baziInfo.region}
+                            onChange={handleBaziChange}
+                            placeholder="如: 北京"
+                            className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
+                        />
+                    </div>
                         {/* 隐藏四柱干支输入区域 - 用户不需要手动输入 */}
                         {/* <div className="grid grid-cols-4 gap-3">
                             {(['yearPillar', 'monthPillar', 'dayPillar', 'hourPillar'] as const).map((field, i) => (
@@ -522,6 +515,9 @@ ${generateUserPrompt()}`;
                             </div>
                             <div>
                                 <p className="text-xs text-gray-700">性别：{baziInfo.gender === 'Male' ? '男' : '女'}</p>
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-700">出生地区：{baziInfo.region}</p>
                             </div>
                         </div>
                     </div>

@@ -18,6 +18,7 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
     birthDay: '',
     birthHour: '',
     birthMinute: '',
+    region: '',
     yearPillar: '',
     monthPillar: '',
     dayPillar: '',
@@ -174,74 +175,47 @@ const BaziForm: React.FC<BaziFormProps> = ({ onSubmit, isLoading }) => {
           </div>
 
           {/* Birth Date Inputs */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 gap-4 mb-4">
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1">出生年份 (阳历)</label>
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生日期与时间</label>
               <input
-                type="number"
-                name="birthYear"
+                type="datetime-local"
+                name="birthDateTime"
                 required
-                min="1900"
-                max="2100"
-                value={formData.birthYear}
-                onChange={handleChange}
-                placeholder="如: 1990"
+                value={(() => {
+                  if (formData.birthYear && formData.birthMonth && formData.birthDay && formData.birthHour && formData.birthMinute) {
+                    return `${formData.birthYear}-${formData.birthMonth.padStart(2, '0')}-${formData.birthDay.padStart(2, '0')}T${formData.birthHour.padStart(2, '0')}:${formData.birthMinute.padStart(2, '0')}`;
+                  }
+                  return '';
+                })()}
+                onChange={(e) => {
+                  const dateTime = e.target.value;
+                  if (dateTime) {
+                    const [date, time] = dateTime.split('T');
+                    const [year, month, day] = date.split('-');
+                    const [hour, minute] = time.split(':');
+                    setFormData(prev => ({
+                      ...prev,
+                      birthYear: year,
+                      birthMonth: month,
+                      birthDay: day,
+                      birthHour: hour,
+                      birthMinute: minute
+                    }));
+                  }
+                }}
                 className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
               />
+              <p className="text-xs text-gray-500 mt-1">年份范围：1901-2025</p>
             </div>
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1">出生月份</label>
+              <label className="block text-xs font-bold text-gray-600 mb-1">出生地区 (可选)</label>
               <input
-                type="number"
-                name="birthMonth"
-                required
-                min="1"
-                max="12"
-                value={formData.birthMonth}
+                type="text"
+                name="region"
+                value={formData.region}
                 onChange={handleChange}
-                placeholder="如: 3"
-                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1">出生日期</label>
-              <input
-                type="number"
-                name="birthDay"
-                required
-                min="1"
-                max="31"
-                value={formData.birthDay}
-                onChange={handleChange}
-                placeholder="如: 15"
-                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1">出生小时</label>
-              <input
-                type="number"
-                name="birthHour"
-                required
-                min="0"
-                max="23"
-                value={formData.birthHour}
-                onChange={handleChange}
-                placeholder="如: 14"
-                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-xs font-bold text-gray-600 mb-1">出生分钟</label>
-              <input
-                type="number"
-                name="birthMinute"
-                required
-                min="0"
-                max="59"
-                value={formData.birthMinute}
-                onChange={handleChange}
-                placeholder="如: 30"
+                placeholder="如: 北京"
                 className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-amber-500 outline-none bg-white font-bold"
               />
             </div>

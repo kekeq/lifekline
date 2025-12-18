@@ -272,9 +272,13 @@ const App: React.FC = () => {
               <p className="text-xs text-gray-500 uppercase tracking-widest">Life Destiny K-Line</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-500 font-medium bg-gray-100 px-3 py-1.5 rounded-full">
+          {/* <div className="flex items-center gap-2 text-sm text-gray-500 font-medium bg-gray-100 px-3 py-1.5 rounded-full">
             <Sparkles className="w-4 h-4 text-amber-500" />
             基于 AI 大模型驱动
+          </div> */}
+          <div className="flex items-center gap-2 text-sm text-gray-500 font-medium bg-gray-100 px-3 py-1.5 rounded-full">
+            <Sparkles className="w-4 h-4 text-amber-500" />
+            小红书：@云朵探险家
           </div>
         </div>
       </header>

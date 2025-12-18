@@ -12,6 +12,7 @@ export interface UserInput {
   birthDay: string;    // 出生日 (1-31)
   birthHour: string;   // 出生小时 (0-23)
   birthMinute: string; // 出生分钟 (0-59)
+  region?: string;     // 出生地区 (如：北京)
   yearPillar: string;  // 年柱
   monthPillar: string; // 月柱
   dayPillar: string;   // 日柱
