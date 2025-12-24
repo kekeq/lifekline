@@ -23,7 +23,7 @@ const CustomTooltip = ({ active, payload }: any) => {
     const data = payload[0].payload as KLinePoint;
     const isUp = data.close >= data.open;
     return (
-      <div className="bg-white/95 backdrop-blur-sm p-5 rounded-xl shadow-2xl border border-gray-200 z-50 w-[320px] md:w-[400px]">
+      <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-5 rounded-xl shadow-2xl border border-gray-200 z-50 w-[280px] sm:w-[320px] md:w-[400px]">
         {/* Header */}
         <div className="flex justify-between items-start mb-3 border-b border-gray-100 pb-2">
           <div>
@@ -168,12 +168,12 @@ const LifeKLineChart: React.FC<LifeKLineChartProps> = ({ data }) => {
   }
 
   return (
-    <div className="w-full h-[600px] bg-white p-2 md:p-6 rounded-xl border border-gray-200 shadow-sm relative">
-      <div className="mb-6 flex justify-between items-center px-2">
-        <h3 className="text-xl font-bold text-gray-800 font-serif-sc">人生流年大运K线图</h3>
-        <div className="flex gap-4 text-xs font-medium">
-           <span className="flex items-center text-red-700 bg-red-50 px-2 py-1 rounded"><div className="w-2 h-2 bg-red-500 mr-2 rounded-full"></div> 吉运 (涨)</span>
-           <span className="flex items-center text-green-700 bg-green-50 px-2 py-1 rounded"><div className="w-2 h-2 bg-green-500 mr-2 rounded-full"></div> 凶运 (跌) </span>
+    <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] bg-white p-2 sm:p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm relative">
+      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-center gap-2 px-2">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 font-serif-sc">人生流年大运K线图</h3>
+        <div className="flex gap-2 sm:gap-4 text-xs font-medium">
+           <span className="flex items-center text-red-700 bg-red-50 px-1 sm:px-2 py-1 rounded"><div className="w-2 h-2 bg-red-500 mr-1 sm:mr-2 rounded-full"></div> <span className="hidden sm:inline">吉运</span> (涨)</span>
+           <span className="flex items-center text-green-700 bg-green-50 px-1 sm:px-2 py-1 rounded"><div className="w-2 h-2 bg-green-500 mr-1 sm:mr-2 rounded-full"></div> <span className="hidden sm:inline">凶运</span> (跌) </span>
         </div>
       </div>
       

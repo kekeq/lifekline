@@ -303,22 +303,22 @@ ${generateUserPrompt()}`;
         baziInfo.birthHour && baziInfo.birthMinute;
 
     return (
-        <div className="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+        <div className="w-full max-w-2xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-100">
             {/* 步骤指示器 */}
-            <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="flex items-center justify-center gap-1 sm:gap-2 mb-6 sm:mb-8">
                 {[1, 2, 3, 4].map((s) => (
                     <React.Fragment key={s}>
                         <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${step === s
+                            className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-bold transition-all ${step === s
                                 ? 'bg-indigo-600 text-white scale-110'
                                 : step > s
                                     ? 'bg-green-500 text-white'
                                     : 'bg-gray-200 text-gray-500'
                                 }`}
                         >
-                            {step > s ? <CheckCircle className="w-5 h-5" /> : s}
+                            {step > s ? <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" /> : s}
                         </div>
-                        {s < 4 && <div className={`w-16 h-1 rounded ${step > s ? 'bg-green-500' : 'bg-gray-200'}`} />}
+                        {s < 4 && <div className={`w-8 sm:w-16 h-1 rounded ${step > s ? 'bg-green-500' : 'bg-gray-200'}`} />}
                     </React.Fragment>
                 ))}
             </div>
@@ -331,7 +331,7 @@ ${generateUserPrompt()}`;
                         <p className="text-gray-500 text-sm">填写您的时辰信息</p>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                             <label className="block text-xs font-bold text-gray-600 mb-1">姓名 (可选)</label>
                             <input
@@ -357,9 +357,9 @@ ${generateUserPrompt()}`;
                         </div>
                     </div>
 
-                    <div className="bg-amber-50 p-4 rounded-xl border border-amber-100">
-                        <div className="flex items-center gap-2 mb-3 text-amber-800 text-sm font-bold">
-                            <Sparkles className="w-4 h-4" />
+                    <div className="bg-amber-50 p-3 sm:p-4 rounded-xl border border-amber-100">
+                        <div className="flex items-center gap-2 mb-2 sm:mb-3 text-amber-800 text-xs sm:text-sm font-bold">
+                            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
                             <span>时辰信息</span>
                         </div>
 
@@ -379,7 +379,7 @@ ${generateUserPrompt()}`;
                         </div> */}
 
                         {/* 出生日期时间控件 */}
-                        <div className="mb-4">
+                        <div className="mb-3 sm:mb-4">
                             <label className="block text-xs font-bold text-gray-600 mb-1">出生日期与时间</label>
                             <input
                                 type="datetime-local"
@@ -523,7 +523,7 @@ ${generateUserPrompt()}`;
                             <Calendar className="w-4 h-4 mr-1" />
                             出生信息
                         </h3>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <p className="text-xs text-gray-700">公历：{baziInfo.birthYear}年{baziInfo.birthMonth}月{baziInfo.birthDay}日 {baziInfo.birthHour}:{baziInfo.birthMinute}</p>
                             </div>
@@ -540,9 +540,9 @@ ${generateUserPrompt()}`;
                     </div>
 
                     {/* 真太阳时 */}
-                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
-                        <p className="text-xs text-yellow-800 flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
+                    <div className="bg-yellow-50 p-2 sm:p-3 rounded-lg border border-yellow-100">
+                        <p className="text-xs sm:text-sm text-yellow-800 flex items-center">
+                            <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
                             真太阳时：{baziInfo.birthHour}:{baziInfo.birthMinute}（时辰：申时）
                         </p>
                     </div>
@@ -553,11 +553,11 @@ ${generateUserPrompt()}`;
                             <Star className="w-4 h-4 mr-1" />
                             四柱八字
                         </h3>
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                             {(['年柱', '月柱', '日柱', '时柱'] as const).map((title, i) => (
-                                <div key={title} className="bg-purple-50 rounded-lg p-3 border border-purple-200 text-center">
+                                <div key={title} className="bg-purple-50 rounded-lg p-2 sm:p-3 border border-purple-200 text-center">
                                     <p className="text-xs text-purple-800 mb-1">{title}</p>
-                                    <p className="text-lg font-bold font-serif-sc text-purple-700">
+                                    <p className="text-base sm:text-lg font-bold font-serif-sc text-purple-700">
                                         {[baziInfo.yearPillar, baziInfo.monthPillar, baziInfo.dayPillar, baziInfo.hourPillar][i]}
                                     </p>
                                 </div>
@@ -566,10 +566,10 @@ ${generateUserPrompt()}`;
                     </div>
 
                     {/* 大运信息 */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                         <h3 className="text-sm font-bold text-gray-800">大运信息</h3>
-                        <div className="bg-white p-4 rounded-xl border border-gray-200">
-                            <div className="grid grid-cols-2 gap-4 mb-3">
+                        <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-2 sm:mb-3">
                                 <div>
                                     <p className="text-xs text-gray-700">起运年龄：{baziInfo.startAge}岁（虚岁）</p>
                                 </div>
@@ -578,10 +578,10 @@ ${generateUserPrompt()}`;
                                 </div>
                             </div>
                             <div>
-                                <p className="text-xs text-gray-700 mb-2">前十步大运：</p>
+                                <p className="text-xs text-gray-700 mb-1 sm:mb-2">前十步大运：</p>
                                 <div className="flex flex-wrap gap-2">
                                     {['戊子', '丁亥', '丙戌', '乙酉', '甲申', '癸未', '壬午', '辛巳', '庚辰'].map((yun, index) => (
-                                        <div key={index} className="bg-gray-50 rounded px-3 py-1 border border-gray-200">
+                                        <div key={index} className="bg-gray-50 rounded px-2 sm:px-3 py-1 border border-gray-200">
                                             <p className="text-xs text-gray-800">{index + 1}.{yun}</p>
                                         </div>
                                     ))}
@@ -591,7 +591,7 @@ ${generateUserPrompt()}`;
                     </div>
 
                     {/* 按钮区域 */}
-                    <div className="flex gap-4">
+                    <div className="flex gap-3 sm:gap-4">
                         <button
                             onClick={() => setStep(1)}
                             className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
@@ -624,20 +624,20 @@ ${generateUserPrompt()}`;
                         <p className="text-gray-500 text-sm">将提示词粘贴到任意 AI 聊天工具</p>
                     </div>
 
-                    <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <div className="bg-blue-50 p-3 sm:p-4 rounded-xl border border-blue-100">
                         <label className="block text-sm font-bold text-blue-800 mb-2">
-                            <MessageSquare className="w-4 h-4 inline mr-2" />
+                            <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                             支持的 AI 工具
                         </label>
                         <p className="text-xs text-blue-700">ChatGPT、Claude、Gemini、通义千问、文心一言等</p>
                     </div>
 
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-200">
                         <label className="block text-sm font-bold text-gray-700 mb-2">
-                            <Sparkles className="w-4 h-4 inline mr-2" />
+                            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                             完整提示词
                         </label>
-                        <div className="bg-white p-4 rounded-lg border border-gray-300 h-64 overflow-y-auto font-mono text-xs">
+                        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-300 h-56 sm:h-64 overflow-y-auto font-mono text-xs">
                             {generateUserPrompt()}
                         </div>
                     </div>
@@ -677,7 +677,7 @@ ${generateUserPrompt()}`;
                                 </>
                             ) : (
                                 <>
-                                    <Sparkles className="w-5 h-5" />
+                                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                                     一键请求
                                 </>
                             )}
@@ -723,7 +723,7 @@ ${generateUserPrompt()}`;
                         </ol>
                     </div>
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-3 sm:gap-4">
                         <button
                             onClick={() => setStep(2)}
                             className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
@@ -735,7 +735,7 @@ ${generateUserPrompt()}`;
                             className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
                         >
                             下一步：导入数据
-                            <ArrowRight className="w-5 h-5" />
+                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                     </div>
                 </div>
@@ -749,27 +749,27 @@ ${generateUserPrompt()}`;
                         <p className="text-gray-500 text-sm">粘贴 AI 返回的 JSON 数据</p>
                     </div>
 
-                    <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-200">
                         <label className="block text-sm font-bold text-gray-700 mb-2">
-                            <Upload className="w-4 h-4 inline mr-2" />
+                            <Upload className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                             粘贴 AI 返回的 JSON 数据
                         </label>
                         <textarea
                             value={jsonInput}
                             onChange={(e) => setJsonInput(e.target.value)}
                             placeholder='将 AI 返回的 JSON 数据粘贴到这里...&#10;&#10;例如:&#10;{&#10;  "bazi": ["癸未", "壬戌", "丙子", "庚寅"],&#10;  "chartPoints": [...],&#10;  ...&#10;}'
-                            className="w-full h-64 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-xs resize-none"
+                            className="w-full h-56 sm:h-64 px-3 sm:px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-xs resize-none"
                         />
                     </div>
 
                     {error && (
-                        <div className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-3 rounded-lg border border-red-200">
-                            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <div className="flex items-center gap-2 text-red-600 bg-red-50 px-3 sm:px-4 py-2 sm:py-3 rounded-lg border border-red-200">
+                            <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                             <p className="text-sm">{error}</p>
                         </div>
                     )}
 
-                    <div className="flex gap-4">
+                    <div className="flex gap-3 sm:gap-4">
                         <button
                             onClick={() => setStep(3)}
                             className="flex-1 py-3 rounded-xl font-bold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-all"
@@ -780,7 +780,7 @@ ${generateUserPrompt()}`;
                             onClick={handleImport}
                             className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
                         >
-                            <Sparkles className="w-5 h-5" />
+                            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                             生成人生K线
                         </button>
                     </div>
