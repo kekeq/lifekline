@@ -11,7 +11,7 @@ Output: ONLY valid JSON. No markdown tags, no explanations.
    - Age < 起运岁数: "童限"
    - Age >= 起运岁数: 每10年更换一次干支。
    - Sequence: 基于"第一步大运"在60甲子表中，按"排序方向"（顺/逆）推导后续9步。
-4. [Scoring]: 0-10分，必须波动明显（模拟K线震荡），严禁平滑直线。
+4. [Scoring]: 0-100分，必须波动明显（模拟K线震荡），严禁平滑直线。
 5. [Logic - Crypto]:
 	- 偏财旺、身强 -> "加仓A股"
 	- 七杀旺、胆大 -> "大胆加仓"
