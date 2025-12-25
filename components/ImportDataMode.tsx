@@ -66,7 +66,7 @@ const ImportDataMode: React.FC<ImportDataModeProps> = ({ onDataImport }) => {
 
     // 生成用户提示词
     const generateUserPrompt = () => {
-        const { isForward, text: daYunDirectionStr } = getDaYunDirection();
+        const { isForward } = getDaYunDirection();
         const genderStr = baziInfo.gender === 'Male' ? '男 (乾造)' : '女 (坤造)';
         const directionStr = isForward ? '顺行' : '逆行';
 
