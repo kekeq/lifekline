@@ -52,7 +52,7 @@ Output: ONLY valid JSON. No markdown tags, no explanations.
       "high": Number,
       "low": Number,
       "score": Number,
-      "reason": "String (Max 25 chars, 简评)"
+      "reason": "String (Max 25 chars, 通俗简评，例如：伤官见官，性格叛逆，易被老师批评，需注意管教。)"
     }
   ]
 }
