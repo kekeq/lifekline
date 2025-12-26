@@ -587,9 +587,9 @@ ${generateUserPrompt()}`;
                     <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-200">
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
-                            完整提示词
+                            完整提示词（复制请按下方按钮）
                         </label>
-                        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-300 h-56 sm:h-64 overflow-y-auto font-mono text-xs">
+                        <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-300 h-56 sm:h-64 overflow-y-auto font-mono text-xs user-select-none">
                             {generateUserPrompt()}
                         </div>
                     </div>
