@@ -584,7 +584,7 @@ ${generateUserPrompt()}`;
                         <p className="text-xs text-blue-700">ChatGPT、Claude、Gemini、通义千问、文心一言等</p>
                     </div>
 
-                    <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-200">
+                    {/* <div className="bg-gray-50 p-3 sm:p-4 rounded-xl border border-gray-200">
                         <label className="block text-sm font-bold text-gray-700 mb-2">
                             <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 inline mr-2" />
                             完整提示词（复制请按下方按钮）
@@ -592,26 +592,7 @@ ${generateUserPrompt()}`;
                         <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-300 h-56 sm:h-64 overflow-y-auto font-mono text-xs user-select-none">
                             {generateUserPrompt()}
                         </div>
-                    </div>
-
-                    <button
-                        onClick={copyFullPrompt}
-                        className={`w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${copied
-                            ? 'bg-green-600 text-white'
-                            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'}`}
-                    >
-                        {copied ? (
-                            <>
-                                <CheckCircle className="w-5 h-5" />
-                                已复制！
-                            </>
-                        ) : (
-                            <>
-                                <Copy className="w-5 h-5" />
-                                复制完整提示词
-                            </>
-                        )}
-                    </button>
+                    </div> */}
 
                     {/* 一键请求按钮 */}
                     <div className="space-y-3">
@@ -653,6 +634,27 @@ ${generateUserPrompt()}`;
                         )}
                     </div>
 
+                    <button
+                        onClick={copyFullPrompt}
+                        className={`w-full py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${copied
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white'}`}
+                    >
+                        {copied ? (
+                            <>
+                                <CheckCircle className="w-5 h-5" />
+                                已复制！
+                            </>
+                        ) : (
+                            <>
+                                <Copy className="w-5 h-5" />
+                                复制完整提示词
+                            </>
+                        )}
+                    </button>
+
+
+
                     {/* 错误提示 */}
                     {error && (
                         <div className="bg-red-50 p-4 rounded-xl border border-red-200">
@@ -665,7 +667,13 @@ ${generateUserPrompt()}`;
                     )}
 
                     <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
-                        <h3 className="text-sm font-bold text-yellow-800 mb-2">使用说明</h3>
+                        <h3 className="text-sm font-bold text-yellow-800 mb-2">方式一</h3>
+                        <ol className="text-xs text-yellow-700 space-y-1 list-decimal list-inside">
+                            <li>一键请求，等待5-10分钟后，直接显示结果</li>
+                        </ol>
+                    </div>
+                    <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-100">
+                        <h3 className="text-sm font-bold text-yellow-800 mb-2">方式二</h3>
                         <ol className="text-xs text-yellow-700 space-y-1 list-decimal list-inside">
                             <li>点击上方按钮复制提示词</li>
                             <li>打开任意 AI 聊天工具（如 ChatGPT）</li>
